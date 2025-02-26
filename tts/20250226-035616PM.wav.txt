@@ -1,0 +1,6 @@
+Original Text: Hi
+
+Sentiment Analysis:
+Score: 0.10400000214576721
+Magnitude: 0.14900000393390656
+Overall Sentiment: NEUTRAL

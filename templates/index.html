@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Audio and Text Processing with Sentiment Analysis</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Audio and Text Processing with Sentiment Analysis</h1>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=True) %}
+      {% if messages %}
+        <ul>
+          {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <div class="row">
+      <!-- Record and Upload Audio Section -->
+      <div class="col">
+        <h2>Record and Upload Audio</h2>
+        <div class="record-controls">
+          <button id="record">Record</button>
+          <button id="stop" disabled>Stop</button>
+          <span id="timer">00:00</span>
+          <audio id="audio" controls></audio>
+        </div>
+        <form id="uploadForm" method="POST" enctype="multipart/form-data">
+          <input type="hidden" name="audio_data" id="audioData">
+        </form>
+
+        <h3>Uploaded Files &amp; Transcripts</h3>
+        <ul>
+          {% for file in files %}
+            <li>
+              <audio controls>
+                <source src="{{ url_for('uploaded_file', filename=file) }}">
+              </audio>
+              <a href="{{ url_for('uploaded_file', filename=file + '.txt') }}" class="transcript">
+                {{ file }}.txt
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <!-- Text-to-Speech Section -->
+      <div class="col">
+        <h2>Text-to-Speech</h2>
+        <form action="{{ url_for('upload_text') }}" method="POST">
+          <textarea name="text" rows="5" placeholder="Type your text here..."></textarea>
+          <input type="submit" value="Generate Audio">
+        </form>
+
+        <h3>Generated TTS Files</h3>
+
+
+        <ul>
+          {% for file in tts_files if file.endswith('.wav') %}
+            <li>
+              <audio controls>
+                <source src="{{ url_for('tts_file', filename=file) }}">
+              </audio>
+              <br>
+              <!-- Add the 'transcript' class so your JS can catch it -->
+              <a href="{{ url_for('tts_file', filename=file + '.txt') }}" class="transcript">View Transcript</a>
+            </li>
+          {% endfor %}
+        </ul>
+        
+
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for displaying transcript text -->
+  <div id="transcriptModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <pre id="transcriptContent"></pre>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
